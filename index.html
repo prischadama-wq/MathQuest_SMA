@@ -379,130 +379,648 @@ Soal Berikutnya ➡️
 
 <script>
 var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZQkOcGY-SfU8e0gpIhw2Nx-1zGtG7nPlW7ODBItAUhg4q6tTUNNFVt1nr0NFAtz7W/exec";
+var MAX_LEVEL = 100;
+var QUESTIONS_PER_LEVEL = 10;
+var XP_PER_LEVEL = 200;
 
-var BANK_SOAL = [
-{
-topic: "Eksponen & Logaritma",
-question: "Tentukan hasil sederhana dari (2<sup>3</sup> × 2<sup>4</sup>) : 2<sup>5</sup> !",
-options: ["2", "4", "8", "16"],
-answer: 1,
-steps: [
-"<b>Langkah 1 (Perkalian Eksponen):</b> Gunakan sifat a<sup>m</sup> × a<sup>n</sup> = a<sup>m+n</sup>. Maka 2<sup>3</sup> × 2<sup>4</sup> = 2<sup>3+4</sup> = 2<sup>7</sup>.",
-"<b>Langkah 2 (Pembagian Eksponen):</b> Gunakan sifat a<sup>m</sup> : a<sup>n</sup> = a<sup>m-n</sup>. Maka 2<sup>7</sup> : 2<sup>5</sup> = 2<sup>7-5</sup> = 2<sup>2</sup>.",
-"<b>Langkah 3 (Hasil Akhir):</b> Hitung nilai 2<sup>2</sup> = 2 × 2 = <b>4</b>."
- ]
-},
-{
-topic: "Eksponen & Logaritma",
-question: "Jika 3<sup>2x - 1</sup> = 27, berapakah nilai x yang memenuhi?",
-options: ["1", "2", "3", "4"],
-answer: 1,
-steps: [
-"<b>Langkah 1 (Samakan Basis):</b> Ubah bilangan 27 menjadi pangkat berbasis 3, yaitu 27 = 3<sup>3</sup>.",
-"<b>Langkah 2 (Samakan Pangkat):</b> Persamaan menjadi 3<sup>2x - 1</sup> = 3<sup>3</sup>. Karena basis sama, maka 2x - 1 = 3.",
-"<b>Langkah 3 (Hitung x):</b> 2x = 3 + 1 → 2x = 4 → x = <b>2</b>."
- ]
-},
-{
-topic: "Eksponen & Logaritma",
-question: "Hitunglah nilai dari <sup>2</sup>log 8 + <sup>2</sup>log 4 !",
-options: ["3", "4", "5", "6"],
-answer: 2,
-steps: [
-"<b>Langkah 1 (Sifat Logaritma):</b> Gunakan sifat <sup>a</sup>log b + <sup>a</sup>log c = <sup>a</sup>log (b × c).",
-"<b>Langkah 2 (Gabungkan):</b> <sup>2</sup>log 8 + <sup>2</sup>log 4 = <sup>2</sup>log (8 × 4) = <sup>2</sup>log 32.",
-"<b>Langkah 3 (Hasil):</b> Karena 2<sup>5</sup> = 32, maka nilai <sup>2</sup>log 32 = <b>5</b>."
- ]
-},
-{
-topic: "Barisan & Deret",
-question: "Diketahui barisan aritmatika: 5, 9, 13, 17, ... Tentukan suku ke-10 (U<sub>10</sub>)!",
-options: ["37", "39", "41", "45"],
-answer: 2,
-steps: [
-"<b>Langkah 1 (Identifikasi):</b> Suku pertama a = 5, dan beda b = 9 - 5 = 4.",
-"<b>Langkah 2 (Rumus):</b> U<sub>n</sub> = a + (n - 1)b.",
-"<b>Langkah 3 (Substitusi n = 10):</b> U<sub>10</sub> = 5 + (10 - 1) × 4 = 5 + 36 = <b>41</b>."
- ]
-},
-{
-topic: "Barisan & Deret",
-question: "Sebuah bakteri membelah diri menjadi 2 setiap jam. Jika mula-mula ada 3 bakteri, berapa jumlah bakteri setelah 4 jam?",
-options: ["24 bakteri", "32 bakteri", "48 bakteri", "96 bakteri"],
-answer: 2,
-steps: [
-"<b>Langkah 1 (Identifikasi Geometri):</b> Jumlah awal a = 3, dan rasio r = 2.",
-"<b>Langkah 2 (Rumus):</b> Setelah 4 jam, jumlah bakteri = a × r<sup>n</sup>.",
-"<b>Langkah 3 (Perhitungan):</b> 3 × 2<sup>4</sup> = 3 × 16 = <b>48 bakteri</b>."
- ]
-},
-{
-topic: "Trigonometri",
-question: "Berapakah nilai dari sin 30° + cos 60° ?",
-options: ["0", "1/2", "1", "√3"],
-answer: 2,
-steps: [
-"<b>Langkah 1 (Sinus):</b> Nilai sin 30° = 1/2.",
-"<b>Langkah 2 (Kosinus):</b> Nilai cos 60° = 1/2.",
-"<b>Langkah 3 (Jumlah):</b> 1/2 + 1/2 = <b>1</b>."
- ]
-},
-{
-topic: "Trigonometri",
-question: "Sebuah tangga sepanjang 10 m bersandar pada dinding dan membentuk sudut 30° terhadap lantai. Berapakah tinggi dinding yang dicapai ujung tangga?",
-options: ["5 m", "5√3 m", "8 m", "10√3 m"],
-answer: 0,
-steps: [
-"<b>Langkah 1 (Model Segitiga):</b> Tangga = sisi miring (10 m), tinggi dinding = sisi depan sudut 30°.",
-"<b>Langkah 2 (Rumus Sinus):</b> sin 30° = depan / miring = tinggi / 10.",
-"<b>Langkah 3 (Hitung):</b> 1/2 = tinggi / 10 → tinggi = <b>5 m</b>."
- ]
-},
-{
-topic: "Fungsi Kuadrat & SPL",
-question: "Tentukan persamaan sumbu simetri dari fungsi kuadrat f(x) = x<sup>2</sup> - 6x + 8 !",
-options: ["x = -3", "x = 3", "x = 6", "x = -6"],
-answer: 1,
-steps: [
-"<b>Langkah 1 (Koefisien):</b> Dari ax<sup>2</sup> + bx + c, didapat a = 1, b = -6, c = 8.",
-"<b>Langkah 2 (Rumus):</b> x = -b / (2a).",
-"<b>Langkah 3 (Substitusi):</b> x = -(-6) / (2 × 1) = 6 / 2 = <b>x = 3</b>."
- ]
-},
-{
-topic: "Fungsi Kuadrat & SPL",
-question: "Harga 2 buku dan 1 pulpen adalah Rp11.000. Harga 1 buku dan 1 pulpen adalah Rp7.000. Berapa harga 1 buku?",
-options: ["Rp3.000", "Rp4.000", "Rp5.000", "Rp6.000"],
-answer: 1,
-steps: [
-"<b>Langkah 1 (Model SPLDV):</b> Buku = x, pulpen = y. (1) 2x + y = 11.000, (2) x + y = 7.000.",
-"<b>Langkah 2 (Eliminasi y):</b> (2x + y) - (x + y) = 11.000 - 7.000.",
-"<b>Langkah 3 (Hasil):</b> Didapat x = <b>Rp4.000</b>."
- ]
-},
-{
-topic: "Peluang",
-question: "Dua buah uang logam dilempar bersamaan sekali. Berapakah peluang munculnya keduanya angka (AA)?",
-options: ["1/4", "1/3", "1/2", "3/4"],
-answer: 0,
-steps: [
-"<b>Langkah 1 (Ruang Sampel):</b> {AA, AG, GA, GG}, jadi n(S) = 4.",
-"<b>Langkah 2 (Titik Sampel):</b> Keduanya angka = {AA}, jadi n(A) = 1.",
-"<b>Langkah 3 (Peluang):</b> P(A) = n(A) / n(S) = <b>1/4</b>."
- ]
+var TOPICS_BY_GRADE = {
+10: ["Eksponen & Logaritma", "Barisan & Deret", "Trigonometri", "Fungsi Kuadrat & SPL", "Peluang"],
+11: ["Komposisi & Invers", "Lingkaran", "Matriks", "Polinomial", "Transformasi Geometri"],
+12: ["Limit Aljabar", "Turunan Fungsi", "Integral Tentu", "Statistika", "Kaidah Pencacahan"]
+};
+
+function detectGrade(kelasStr) {
+var s = String(kelasStr || "").toUpperCase().trim();
+if (s.indexOf("XII") !== -1 || s.indexOf("12") !== -1) return 12;
+if (s.indexOf("XI") !== -1 || s.indexOf("11") !== -1) return 11;
+return 10;
 }
-];
 
-var user = { nama: "", kelas: "", xp: 0, level: 1, streak: 0 };
-var filteredQuestions = BANK_SOAL.slice();
+function rand(min, max) {
+return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function pick(arr) {
+return arr[rand(0, arr.length - 1)];
+}
+
+function gcd(a, b) {
+a = Math.abs(a);
+b = Math.abs(b);
+while (b !== 0) {
+var t = b;
+b = a % b;
+a = t;
+}
+return a || 1;
+}
+
+function fracStr(num, den) {
+if (num === 0) return "0";
+var g = gcd(num, den);
+num = num / g;
+den = den / g;
+if (den === 1) return String(num);
+return num + "/" + den;
+}
+
+function polyTerm(coef, suffix, isFirst) {
+if (coef === 0) return "";
+var sign = isFirst ? (coef < 0 ? "-" : "") : (coef < 0 ? " - " : " + ");
+var abs = Math.abs(coef);
+var numPart = (abs === 1 && suffix !== "") ? "" : String(abs);
+return sign + numPart + suffix;
+}
+
+function makeChoices(correctStr, candidates) {
+var arr = [String(correctStr)];
+for (var i = 0; i < candidates.length && arr.length < 4; i++) {
+var c = String(candidates[i]);
+if (arr.indexOf(c) === -1) arr.push(c);
+}
+var extra = 1;
+while (arr.length < 4) {
+var fallback = isNaN(Number(correctStr))
+? String(correctStr) + " (" + extra + ")"
+: String(Number(correctStr) + extra);
+if (arr.indexOf(fallback) === -1) arr.push(fallback);
+extra++;
+}
+for (var j = arr.length - 1; j > 0; j--) {
+var k = Math.floor(Math.random() * (j + 1));
+var tmp = arr[j];
+arr[j] = arr[k];
+arr[k] = tmp;
+}
+return { options: arr, answer: arr.indexOf(String(correctStr)) };
+}
+
+// ==================== GENERATOR KELAS 10 ====================
+function genEksponen1(lvl) {
+var tier = Math.ceil(lvl / 20);
+var b = rand(2, 2 + tier);
+var k = rand(1, 3);
+var m = rand(2, 4 + tier);
+var n = rand(2, 4 + tier);
+var p = m + n - k;
+var ans = Math.pow(b, k);
+var ch = makeChoices(ans, [ans * b, Math.max(1, Math.floor(ans / b)), ans + b, b * k, ans + 2]);
+return {
+topic: "Eksponen & Logaritma",
+question: "Tentukan hasil sederhana dari (" + b + "<sup>" + m + "</sup> × " + b + "<sup>" + n + "</sup>) : " + b + "<sup>" + p + "</sup> !",
+options: ch.options, answer: ch.answer,
+steps: [
+"<b>Langkah 1 (Perkalian Eksponen):</b> " + b + "<sup>" + m + "</sup> × " + b + "<sup>" + n + "</sup> = " + b + "<sup>" + (m + n) + "</sup>.",
+"<b>Langkah 2 (Pembagian Eksponen):</b> " + b + "<sup>" + (m + n) + "</sup> : " + b + "<sup>" + p + "</sup> = " + b + "<sup>" + k + "</sup>.",
+"<b>Langkah 3 (Hasil Akhir):</b> " + b + "<sup>" + k + "</sup> = <b>" + ans + "</b>."
+ ]
+};
+}
+
+function genEksponen2(lvl) {
+var tier = Math.ceil(lvl / 20);
+var b = pick([2, 3, 5]);
+var d = b === 2 ? rand(3, 6) : (b === 3 ? rand(2, 4) : rand(2, 3));
+var R = Math.pow(b, d);
+var a = lvl <= 15 ? 1 : rand(1, 3);
+var x = rand(1, 3 + tier);
+if (a === 1 && x === d) x = d + 1;
+var c = d - a * x;
+var leftExp = (a === 1 ? "" : a) + "x" + (c > 0 ? " + " + c : (c < 0 ? " - " + Math.abs(c) : ""));
+var ch = makeChoices(x, [x + 1, x - 1, x + 2, x - 2, x + 3]);
+return {
+topic: "Eksponen & Logaritma",
+question: "Jika " + b + "<sup>" + leftExp + "</sup> = " + R + ", berapakah nilai x?",
+options: ch.options, answer: ch.answer,
+steps: [
+"<b>Langkah 1 (Samakan Basis):</b> " + R + " = " + b + "<sup>" + d + "</sup>.",
+"<b>Langkah 2 (Samakan Pangkat):</b> " + leftExp + " = " + d + ".",
+"<b>Langkah 3 (Hitung x):</b> " + (a === 1 ? "" : a) + "x = " + (d - c) + " → x = <b>" + x + "</b>."
+ ]
+};
+}
+
+function genLogaritma(lvl) {
+var b = pick([2, 3, 5]);
+var maxP = b === 5 ? 2 : 3;
+var p = rand(1, maxP);
+var q = rand(1, maxP);
+var A = Math.pow(b, p);
+var B = Math.pow(b, q);
+var ans = p + q;
+var ch = makeChoices(ans, [ans + 1, ans - 1, ans + 2, ans + 3, b]);
+return {
+topic: "Eksponen & Logaritma",
+question: "Hitunglah nilai dari <sup>" + b + "</sup>log " + A + " + <sup>" + b + "</sup>log " + B + " !",
+options: ch.options, answer: ch.answer,
+steps: [
+"<b>Langkah 1 (Sifat Logaritma):</b> <sup>a</sup>log b + <sup>a</sup>log c = <sup>a</sup>log (b × c).",
+"<b>Langkah 2 (Gabungkan):</b> <sup>" + b + "</sup>log (" + A + " × " + B + ") = <sup>" + b + "</sup>log " + (A * B) + ".",
+"<b>Langkah 3 (Hasil):</b> Karena " + b + "<sup>" + ans + "</sup> = " + (A * B) + ", hasilnya = <b>" + ans + "</b>."
+ ]
+};
+}
+
+function genAritmatika(lvl) {
+var tier = Math.ceil(lvl / 20);
+var a = rand(2, 5 + tier * 4);
+var b = (lvl > 25 && rand(0, 1) === 1) ? -rand(2, 3 + tier) : rand(2, 4 + tier * 2);
+if (lvl > 25 && b < 0 && a < 20) a += 25;
+var n = rand(6, 10 + tier * 3);
+var ans = a + (n - 1) * b;
+var ch = makeChoices(ans, [ans + b, ans - b, ans + 2 * b, ans + 1, ans - 1]);
+return {
+topic: "Barisan & Deret",
+question: "Diketahui barisan aritmatika: " + a + ", " + (a + b) + ", " + (a + 2 * b) + ", ... Tentukan suku ke-" + n + " (U<sub>" + n + "</sub>)!",
+options: ch.options, answer: ch.answer,
+steps: [
+"<b>Langkah 1 (Identifikasi):</b> a = " + a + ", beda b = " + b + ".",
+"<b>Langkah 2 (Rumus):</b> U<sub>n</sub> = a + (n - 1)b.",
+"<b>Langkah 3 (Hitung):</b> U<sub>" + n + "</sub> = " + a + " + " + (n - 1) + " × (" + b + ") = <b>" + ans + "</b>."
+ ]
+};
+}
+
+function genGeometri(lvl) {
+var tier = Math.ceil(lvl / 20);
+var a = rand(1, 3 + tier);
+var r = pick([2, 3]);
+var n = r === 2 ? rand(4, 7) : rand(3, 5);
+var ans = a * Math.pow(r, n - 1);
+var ch = makeChoices(ans, [ans * r, Math.max(1, Math.floor(ans / r)), ans + r, ans + a, ans * 2]);
+return {
+topic: "Barisan & Deret",
+question: "Diketahui barisan geometri: " + a + ", " + (a * r) + ", " + (a * r * r) + ", ... Tentukan suku ke-" + n + " (U<sub>" + n + "</sub>)!",
+options: ch.options, answer: ch.answer,
+steps: [
+"<b>Langkah 1 (Identifikasi):</b> a = " + a + ", rasio r = " + r + ".",
+"<b>Langkah 2 (Rumus):</b> U<sub>n</sub> = a × r<sup>n - 1</sup>.",
+"<b>Langkah 3 (Hitung):</b> U<sub>" + n + "</sub> = " + a + " × " + r + "<sup>" + (n - 1) + "</sup> = <b>" + ans + "</b>."
+ ]
+};
+}
+
+function genTrigonometri(lvl) {
+var tier = Math.ceil(lvl / 20);
+if (rand(0, 1) === 0) {
+var k = rand(1, 2 + tier);
+var m = k + 2 * rand(0, 2);
+var ans = (k + m) / 2;
+var q1 = k === 1 ? "sin 30°" : k + " sin 30°";
+var q2 = m === 1 ? "cos 60°" : m + " cos 60°";
+var ch = makeChoices(ans, [ans + 1, Math.max(0, ans - 1), ans + 2, ans + 3, "1/2"]);
+return {
+topic: "Trigonometri",
+question: "Berapakah nilai dari " + q1 + " + " + q2 + " ?",
+options: ch.options, answer: ch.answer,
+steps: [
+"<b>Langkah 1 (Sudut Istimewa):</b> sin 30° = 1/2 dan cos 60° = 1/2.",
+"<b>Langkah 2 (Substitusi):</b> (" + k + " × 1/2) + (" + m + " × 1/2) = " + (k / 2) + " + " + (m / 2) + ".",
+"<b>Langkah 3 (Hasil):</b> = <b>" + ans + "</b>."
+ ]
+};
+} else {
+var L = 2 * rand(3, 6 + tier);
+var h = L / 2;
+var ch2 = makeChoices(h + " m", [(h + 2) + " m", (h + 4) + " m", Math.max(1, h - 2) + " m", (h * 2) + " m"]);
+return {
+topic: "Trigonometri",
+question: "Sebuah tangga sepanjang " + L + " m bersandar pada dinding dan membentuk sudut 30° terhadap lantai. Berapakah tinggi dinding yang dicapai ujung tangga?",
+options: ch2.options, answer: ch2.answer,
+steps: [
+"<b>Langkah 1 (Segitiga):</b> Sisi miring = " + L + " m, tinggi = sisi depan sudut 30°.",
+"<b>Langkah 2 (Sinus):</b> sin 30° = tinggi / " + L + ".",
+"<b>Langkah 3 (Hitung):</b> 1/2 = tinggi / " + L + " → tinggi = <b>" + h + " m</b>."
+ ]
+};
+}
+}
+
+function genKuadratSPL(lvl) {
+var tier = Math.ceil(lvl / 20);
+if (rand(0, 1) === 0) {
+var a = lvl <= 20 ? 1 : rand(1, 3);
+var xv = pick([-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]);
+var b = -2 * a * xv;
+var c = rand(-9, 9);
+var expr = polyTerm(a, "x<sup>2</sup>", true) + polyTerm(b, "x", false) + polyTerm(c, "", false);
+var ch = makeChoices("x = " + xv, ["x = " + (-xv), "x = " + (xv + 1), "x = " + (xv - 1), "x = " + (xv + 2)]);
+return {
+topic: "Fungsi Kuadrat & SPL",
+question: "Tentukan persamaan sumbu simetri dari fungsi kuadrat f(x) = " + expr + " !",
+options: ch.options, answer: ch.answer,
+steps: [
+"<b>Langkah 1 (Koefisien):</b> a = " + a + ", b = " + b + ", c = " + c + ".",
+"<b>Langkah 2 (Rumus):</b> x = -b / (2a).",
+"<b>Langkah 3 (Substitusi):</b> x = -(" + b + ") / " + (2 * a) + " = <b>x = " + xv + "</b>."
+ ]
+};
+} else {
+var x = rand(2, 6 + tier) * 1000;
+var y = rand(1, 4 + tier) * 1000;
+if (x === y) y += 1000;
+var k1 = rand(2, 4);
+var tot1 = k1 * x + y;
+var tot2 = x + y;
+var fmt = function(v) { return "Rp" + v.toLocaleString("id-ID"); };
+var chSPL = makeChoices(fmt(x), [fmt(y), fmt(x + 1000), fmt(Math.max(1000, x - 1000)), fmt(x + 2000)]);
+return {
+topic: "Fungsi Kuadrat & SPL",
+question: "Harga " + k1 + " buku dan 1 pulpen adalah " + fmt(tot1) + ". Harga 1 buku dan 1 pulpen adalah " + fmt(tot2) + ". Berapa harga 1 buku?",
+options: chSPL.options, answer: chSPL.answer,
+steps: [
+"<b>Langkah 1 (SPLDV):</b> " + k1 + "x + y = " + tot1.toLocaleString("id-ID") + " dan x + y = " + tot2.toLocaleString("id-ID") + ".",
+"<b>Langkah 2 (Eliminasi y):</b> " + (k1 - 1) + "x = " + (tot1 - tot2).toLocaleString("id-ID") + ".",
+"<b>Langkah 3 (Hasil):</b> x = <b>" + fmt(x) + "</b>."
+ ]
+};
+}
+}
+
+function genPeluang(lvl) {
+var tier = Math.ceil(lvl / 20);
+var m = rand(2, 4 + tier);
+var b = rand(2, 4 + tier);
+var k = lvl > 20 ? rand(1, 3) : 0;
+var tot = m + b + k;
+var ans = fracStr(m, tot);
+var ch = makeChoices(ans, [fracStr(Math.max(1, m - 1), tot), fracStr(m + 1, tot), fracStr(m, tot + 1), fracStr(tot - m, tot), fracStr(1, tot)]);
+return {
+topic: "Peluang",
+question: "Di dalam kantong terdapat " + m + " bola merah, " + b + " bola biru" + (k > 0 ? ", dan " + k + " bola kuning" : "") + ". Peluang terambilnya 1 bola merah adalah...",
+options: ch.options, answer: ch.answer,
+steps: [
+"<b>Langkah 1 (Ruang Sampel):</b> n(S) = " + tot + " bola.",
+"<b>Langkah 2 (Titik Sampel):</b> n(A) = " + m + " bola merah.",
+"<b>Langkah 3 (Peluang):</b> P(A) = " + m + "/" + tot + " = <b>" + ans + "</b>."
+ ]
+};
+}
+
+// ==================== GENERATOR KELAS 11 ====================
+function genKomposisiInvers(lvl) {
+var tier = Math.ceil(lvl / 20);
+if (rand(0, 1) === 0) {
+var a = rand(2, 3 + tier);
+var b = rand(-5, 6);
+var c = rand(1, 2 + tier);
+var d = rand(-4, 5);
+var k = rand(1, 4);
+var gk = c * k + d;
+var ans = a * gk + b;
+var fx = polyTerm(a, "x", true) + polyTerm(b, "", false);
+var gx = polyTerm(c, "x", true) + polyTerm(d, "", false);
+var ch = makeChoices(ans, [ans + a, ans - a, ans + 2, ans - 2, gk]);
+return {
+topic: "Komposisi & Invers",
+question: "Diketahui f(x) = " + fx + " dan g(x) = " + gx + ". Tentukan nilai (f o g)(" + k + ")!",
+options: ch.options, answer: ch.answer,
+steps: [
+"<b>Langkah 1 (Hitung g(" + k + ")):</b> g(" + k + ") = " + c + "(" + k + ")" + (d >= 0 ? " + " + d : " - " + Math.abs(d)) + " = " + gk + ".",
+"<b>Langkah 2 (Substitusi ke f):</b> (f o g)(" + k + ") = f(g(" + k + ")) = f(" + gk + ").",
+"<b>Langkah 3 (Hasil):</b> f(" + gk + ") = " + a + "(" + gk + ")" + (b >= 0 ? " + " + b : " - " + Math.abs(b)) + " = <b>" + ans + "</b>."
+ ]
+};
+} else {
+var aI = rand(2, 4 + Math.floor(tier / 2));
+var bI = rand(-6, 7);
+var xAns = rand(-3, 5 + tier);
+var yVal = aI * xAns + bI;
+var fxI = polyTerm(aI, "x", true) + polyTerm(bI, "", false);
+var chI = makeChoices(xAns, [xAns + 1, xAns - 1, xAns + 2, -xAns, yVal]);
+return {
+topic: "Komposisi & Invers",
+question: "Diketahui f(x) = " + fxI + ". Tentukan nilai dari f<sup>-1</sup>(" + yVal + ")!",
+options: chI.options, answer: chI.answer,
+steps: [
+"<b>Langkah 1 (Konsep Invers):</b> Mencari f<sup>-1</sup>(" + yVal + ") sama dengan mencari nilai x saat f(x) = " + yVal + ".",
+"<b>Langkah 2 (Persamaan):</b> " + fxI + " = " + yVal + " → " + aI + "x = " + (yVal - bI) + ".",
+"<b>Langkah 3 (Hasil):</b> x = " + (yVal - bI) + " / " + aI + " = <b>" + xAns + "</b>."
+ ]
+};
+}
+}
+
+function genLingkaran(lvl) {
+var tier = Math.ceil(lvl / 20);
+var a = pick([-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]);
+var b = pick([-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]);
+var r = rand(2, 5 + tier);
+if (lvl <= 20 || rand(0, 1) === 0) {
+var r2 = r * r;
+var px = a > 0 ? "(x - " + a + ")" : "(x + " + Math.abs(a) + ")";
+var py = b > 0 ? "(y - " + b + ")" : "(y + " + Math.abs(b) + ")";
+var ch = makeChoices(r, [r + 1, Math.max(1, r - 1), r2, r + 2, r + 3]);
+return {
+topic: "Lingkaran",
+question: "Diketahui persamaan lingkaran " + px + "<sup>2</sup> + " + py + "<sup>2</sup> = " + r2 + ". Berapakah panjang jari-jarinya (r)?",
+options: ch.options, answer: ch.answer,
+steps: [
+"<b>Langkah 1 (Bentuk Baku):</b> Persamaan (x - a)<sup>2</sup> + (y - b)<sup>2</sup> = r<sup>2</sup>.",
+"<b>Langkah 2 (Identifikasi):</b> Diperoleh r<sup>2</sup> = " + r2 + ".",
+"<b>Langkah 3 (Akar Kuadrat):</b> r = √" + r2 + " = <b>" + r + "</b>."
+ ]
+};
+} else {
+var A = -2 * a;
+var B = -2 * b;
+var C = a * a + b * b - r * r;
+var eq = "x<sup>2</sup> + y<sup>2</sup>" + polyTerm(A, "x", false) + polyTerm(B, "y", false) + polyTerm(C, "", false) + " = 0";
+var ansStr = "(" + a + ", " + b + ")";
+var chP = makeChoices(ansStr, [
+"(" + (-a) + ", " + (-b) + ")",
+"(" + A + ", " + B + ")",
+"(" + (-A) + ", " + (-B) + ")",
+"(" + (a + 1) + ", " + (b - 1) + ")"
+ ]);
+return {
+topic: "Lingkaran",
+question: "Tentukan koordinat titik pusat lingkaran " + eq + " !",
+options: chP.options, answer: chP.answer,
+steps: [
+"<b>Langkah 1 (Koefisien):</b> Dari x<sup>2</sup> + y<sup>2</sup> + Ax + By + C = 0, didapat A = " + A + ", B = " + B + ".",
+"<b>Langkah 2 (Rumus Pusat):</b> P = (-A/2, -B/2).",
+"<b>Langkah 3 (Hitung):</b> P = (" + (-A) + "/2, " + (-B) + "/2) = <b>" + ansStr + "</b>."
+ ]
+};
+}
+}
+
+function genMatriks(lvl) {
+var tier = Math.ceil(lvl / 20);
+var lim = 3 + tier;
+var a = rand(-lim, lim);
+var b = rand(-lim, lim);
+var c = rand(-lim, lim);
+var d = rand(-lim, lim);
+var det = a * d - b * c;
+var matHtml = "<span style='display:inline-flex;border-left:2px solid #94a3b8;border-right:2px solid #94a3b8;padding:2px 10px;margin:0 6px;border-radius:4px;vertical-align:middle;'><span style='display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;text-align:center;'><span>" + a + "</span><span>" + b + "</span><span>" + c + "</span><span>" + d + "</span></span></span>";
+var ch = makeChoices(det, [det + 2, det - 2, (a * d + b * c), -det, det + 4]);
+return {
+topic: "Matriks",
+question: "Tentukan nilai determinan dari matriks A = " + matHtml + " !",
+options: ch.options, answer: ch.answer,
+steps: [
+"<b>Langkah 1 (Rumus Determinan 2×2):</b> det(A) = (a × d) - (b × c).",
+"<b>Langkah 2 (Kalikan Diagonal):</b> (" + a + " × " + d + ") - (" + b + " × " + c + ") = " + (a * d) + " - (" + (b * c) + ").",
+"<b>Langkah 3 (Hasil):</b> = <b>" + det + "</b>."
+ ]
+};
+}
+
+function genPolinomial(lvl) {
+var tier = Math.ceil(lvl / 20);
+var a = rand(1, 2 + Math.floor(tier / 2));
+var b = rand(-4, 4);
+var c = rand(-5, 5);
+var d = rand(-6, 6);
+var k = pick([-2, -1, 1, 2, 3]);
+var ans = a * k * k * k + b * k * k + c * k + d;
+var px = polyTerm(a, "x<sup>3</sup>", true) + polyTerm(b, "x<sup>2</sup>", false) + polyTerm(c, "x", false) + polyTerm(d, "", false);
+var divStr = k > 0 ? "(x - " + k + ")" : "(x + " + Math.abs(k) + ")";
+var ch = makeChoices(ans, [ans + 2, ans - 2, ans + 4, ans - 4, -ans]);
+return {
+topic: "Polinomial",
+question: "Tentukan sisa pembagian polinomial P(x) = " + px + " jika dibagi oleh " + divStr + " !",
+options: ch.options, answer: ch.answer,
+steps: [
+"<b>Langkah 1 (Teorema Sisa):</b> Pembagi " + divStr + " = 0 menghasilkan x = " + k + ".",
+"<b>Langkah 2 (Substitusi):</b> Sisa = P(" + k + ") = " + a + "(" + k + ")<sup>3</sup> + (" + b + ")(" + k + ")<sup>2</sup> + (" + c + ")(" + k + ") + (" + d + ").",
+"<b>Langkah 3 (Hasil):</b> " + (a * k * k * k) + " + (" + (b * k * k) + ") + (" + (c * k) + ") + (" + d + ") = <b>" + ans + "</b>."
+ ]
+};
+}
+
+function genTransformasi(lvl) {
+var tier = Math.ceil(lvl / 20);
+var x = rand(-5, 6);
+var y = rand(-5, 6);
+if (rand(0, 1) === 0) {
+var tx = rand(-4 - tier, 4 + tier);
+var ty = rand(-4 - tier, 4 + tier);
+if (tx === 0) tx = 3;
+if (ty === 0) ty = -2;
+var nx = x + tx;
+var ny = y + ty;
+var ansStr = "(" + nx + ", " + ny + ")";
+var ch = makeChoices(ansStr, [
+"(" + (x - tx) + ", " + (y - ty) + ")",
+"(" + (nx + 1) + ", " + ny + ")",
+"(" + nx + ", " + (ny + 1) + ")",
+"(" + ny + ", " + nx + ")"
+ ]);
+return {
+topic: "Transformasi Geometri",
+question: "Tentukan bayangan titik P(" + x + ", " + y + ") jika ditranslasikan oleh T(" + tx + ", " + ty + ")!",
+options: ch.options, answer: ch.answer,
+steps: [
+"<b>Langkah 1 (Rumus Translasi):</b> P'(x + a, y + b).",
+"<b>Langkah 2 (Hitung):</b> x' = " + x + " + (" + tx + ") = " + nx + ", dan y' = " + y + " + (" + ty + ") = " + ny + ".",
+"<b>Langkah 3 (Bayangan):</b> P' = <b>" + ansStr + "</b>."
+ ]
+};
+} else {
+var k = pick([-2, 2, 3]);
+var dx = k * x;
+var dy = k * y;
+var ansD = "(" + dx + ", " + dy + ")";
+var chD = makeChoices(ansD, [
+"(" + (x + k) + ", " + (y + k) + ")",
+"(" + (-dx) + ", " + dy + ")",
+"(" + dx + ", " + (-dy) + ")",
+"(" + (dx + 2) + ", " + (dy - 2) + ")"
+ ]);
+return {
+topic: "Transformasi Geometri",
+question: "Tentukan bayangan titik A(" + x + ", " + y + ") oleh dilatasi [O(0,0), " + k + "]!",
+options: chD.options, answer: chD.answer,
+steps: [
+"<b>Langkah 1 (Rumus Dilatasi Pusat O):</b> A'(k × x, k × y).",
+"<b>Langkah 2 (Kalikan):</b> x' = " + k + " × (" + x + ") = " + dx + ", dan y' = " + k + " × (" + y + ") = " + dy + ".",
+"<b>Langkah 3 (Bayangan):</b> A' = <b>" + ansD + "</b>."
+ ]
+};
+}
+}
+
+// ==================== GENERATOR KELAS 12 ====================
+function genLimit(lvl) {
+var tier = Math.ceil(lvl / 20);
+var a = rand(1, 3 + tier);
+var b = rand(1, 4 + tier);
+var coefB = b - a;
+var coefC = -a * b;
+var numExpr = "x<sup>2</sup>" + polyTerm(coefB, "x", false) + polyTerm(coefC, "", false);
+var ans = a + b;
+var ch = makeChoices(ans, [ans + 1, ans - 1, ans + 2, b - a, 0]);
+return {
+topic: "Limit Aljabar",
+question: "Tentukan nilai dari lim<sub>x → " + a + "</sub> (" + numExpr + ") / (x - " + a + ") !",
+options: ch.options, answer: ch.answer,
+steps: [
+"<b>Langkah 1 (Faktorkan Pembilang):</b> " + numExpr + " = (x - " + a + ")(x + " + b + ").",
+"<b>Langkah 2 (Coret Pembuat Nol):</b> Faktor (x - " + a + ") saling membagi, tersisa (x + " + b + ").",
+"<b>Langkah 3 (Substitusi x = " + a + "):</b> " + a + " + " + b + " = <b>" + ans + "</b>."
+ ]
+};
+}
+
+function genTurunan(lvl) {
+var tier = Math.ceil(lvl / 20);
+var a = rand(1, 2 + Math.floor(tier / 2));
+var b = pick([-3, -2, -1, 1, 2, 3, 4]);
+var c = rand(-5, 6);
+var d = rand(-8, 8);
+var k = rand(1, 3);
+var ans = 3 * a * k * k + 2 * b * k + c;
+var fx = polyTerm(a, "x<sup>3</sup>", true) + polyTerm(b, "x<sup>2</sup>", false) + polyTerm(c, "x", false) + polyTerm(d, "", false);
+var fpx = polyTerm(3 * a, "x<sup>2</sup>", true) + polyTerm(2 * b, "x", false) + polyTerm(c, "", false);
+var ch = makeChoices(ans, [ans + 2, ans - 2, ans + 4, ans - 4, 3 * a + 2 * b + c]);
+return {
+topic: "Turunan Fungsi",
+question: "Diketahui f(x) = " + fx + ". Tentukan nilai turunan pertama f'(" + k + ")!",
+options: ch.options, answer: ch.answer,
+steps: [
+"<b>Langkah 1 (Turunkan):</b> Gunakan aturan pangkat nx<sup>n-1</sup> → f'(x) = " + fpx + ".",
+"<b>Langkah 2 (Substitusi x = " + k + "):</b> f'(" + k + ") = " + (3 * a) + "(" + k + ")<sup>2</sup> + (" + (2 * b) + ")(" + k + ") + (" + c + ").",
+"<b>Langkah 3 (Hasil):</b> = <b>" + ans + "</b>."
+ ]
+};
+}
+
+function genIntegral(lvl) {
+var tier = Math.ceil(lvl / 20);
+var a = rand(1, 2 + Math.floor(tier / 2));
+var c = rand(1, 3 + tier);
+var b = rand(1, 3);
+var ans = a * b * b * b + c * b * b;
+var integrand = (3 * a) + "x<sup>2</sup> + " + (2 * c) + "x";
+var anti = (a === 1 ? "" : a) + "x<sup>3</sup> + " + (c === 1 ? "" : c) + "x<sup>2</sup>";
+var ch = makeChoices(ans, [ans + 2, Math.max(1, ans - 2), ans + 4, ans * 2, (3 * a * b * b + 2 * c * b)]);
+return {
+topic: "Integral Tentu",
+question: "Hitunglah nilai integral tentu ∫<sub>0</sub><sup>" + b + "</sup> (" + integrand + ") dx !",
+options: ch.options, answer: ch.answer,
+steps: [
+"<b>Langkah 1 (Antiturunan):</b> Integral dari " + integrand + " adalah F(x) = " + anti + ".",
+"<b>Langkah 2 (Batas Atas & Bawah):</b> Hitung F(" + b + ") - F(0).",
+"<b>Langkah 3 (Hasil):</b> [" + a + "(" + b + ")<sup>3</sup> + " + c + "(" + b + ")<sup>2</sup>] - 0 = <b>" + ans + "</b>."
+]
+};
+}
+
+function genStatistika(lvl) {
+var tier = Math.ceil(lvl / 20);
+var mean = rand(6, 9 + tier);
+var x1 = mean - rand(1, 3);
+var x2 = mean + rand(1, 3);
+var x3 = mean - rand(0, 2);
+var x4 = 4 * mean - (x1 + x2 + x3);
+var ch = makeChoices(x4, [x4 + 1, x4 - 1, x4 + 2, Math.max(1, x4 - 2), mean]);
+return {
+topic: "Statistika",
+question: "Diketahui empat data: " + x1 + ", " + x2 + ", " + x3 + ", dan p memiliki rata-rata " + mean + ". Berapakah nilai p?",
+options: ch.options, answer: ch.answer,
+steps: [
+"<b>Langkah 1 (Total Nilai):</b> Jumlah 4 data = 4 × rata-rata = 4 × " + mean + " = " + (4 * mean) + ".",
+"<b>Langkah 2 (Persamaan):</b> " + x1 + " + " + x2 + " + " + x3 + " + p = " + (4 * mean) + " → " + (x1 + x2 + x3) + " + p = " + (4 * mean) + ".",
+"<b>Langkah 3 (Hasil):</b> p = " + (4 * mean) + " - " + (x1 + x2 + x3) + " = <b>" + x4 + "</b>."
+ ]
+};
+}
+
+function genPencacahan(lvl) {
+var tier = Math.ceil(lvl / 20);
+var n = rand(5, 8 + tier);
+if (rand(0, 1) === 0) {
+var ansC = (n * (n - 1)) / 2;
+var chC = makeChoices(ansC, [n * (n - 1), ansC + n, Math.max(1, ansC - n), ansC + 2, n * 2]);
+return {
+topic: "Kaidah Pencacahan",
+question: "Dari " + n + " anggota Eskul Matematika, akan dipilih 2 orang sebagai perwakilan lomba tanpa memperhatikan urutan. Banyak cara memilihnya adalah...",
+options: chC.options, answer: chC.answer,
+steps: [
+"<b>Langkah 1 (Kombinasi):</b> Karena urutan tidak diperhatikan, gunakan C(" + n + ", 2).",
+"<b>Langkah 2 (Rumus):</b> (" + n + " × " + (n - 1) + ") / 2!.",
+"<b>Langkah 3 (Hasil):</b> " + (n * (n - 1)) + " / 2 = <b>" + ansC + "</b>."
+ ]
+};
+} else {
+var ansP = n * (n - 1);
+var chP = makeChoices(ansP, [(n * (n - 1)) / 2, ansP + n, Math.max(1, ansP - n), n * n, ansP + 2]);
+return {
+topic: "Kaidah Pencacahan",
+question: "Dari " + n + " kandidat, akan dipilih 1 Ketua dan 1 Sekretaris Eskul (tidak boleh rangkap). Banyak susunan pengurus yang mungkin adalah...",
+options: chP.options, answer: chP.answer,
+steps: [
+"<b>Langkah 1 (Aturan Pengisian Tempat / Permutasi):</b> Ada " + n + " pilihan untuk Ketua.",
+"<b>Langkah 2 (Sisa Pilihan):</b> Tersisa " + (n - 1) + " pilihan untuk Sekretaris.",
+"<b>Langkah 3 (Kalikan):</b> " + n + " × " + (n - 1) + " = <b>" + ansP + "</b>."
+ ]
+};
+}
+}
+
+function generateOneQuestion(grade, topicFilter, lvl) {
+if (grade === 11) {
+if (topicFilter === "Komposisi & Invers") return genKomposisiInvers(lvl);
+if (topicFilter === "Lingkaran") return genLingkaran(lvl);
+if (topicFilter === "Matriks") return genMatriks(lvl);
+if (topicFilter === "Polinomial") return genPolinomial(lvl);
+if (topicFilter === "Transformasi Geometri") return genTransformasi(lvl);
+return pick([genKomposisiInvers, genLingkaran, genMatriks, genPolinomial, genTransformasi])(lvl);
+}
+if (grade === 12) {
+if (topicFilter === "Limit Aljabar") return genLimit(lvl);
+if (topicFilter === "Turunan Fungsi") return genTurunan(lvl);
+if (topicFilter === "Integral Tentu") return genIntegral(lvl);
+if (topicFilter === "Statistika") return genStatistika(lvl);
+if (topicFilter === "Kaidah Pencacahan") return genPencacahan(lvl);
+return pick([genLimit, genTurunan, genIntegral, genStatistika, genPencacahan])(lvl);
+}
+if (topicFilter === "Eksponen & Logaritma") return pick([genEksponen1, genEksponen2, genLogaritma])(lvl);
+if (topicFilter === "Barisan & Deret") return pick([genAritmatika, genGeometri])(lvl);
+if (topicFilter === "Trigonometri") return genTrigonometri(lvl);
+if (topicFilter === "Fungsi Kuadrat & SPL") return genKuadratSPL(lvl);
+if (topicFilter === "Peluang") return genPeluang(lvl);
+return pick([genEksponen1, genEksponen2, genLogaritma, genAritmatika, genGeometri, genTrigonometri, genKuadratSPL, genPeluang])(lvl);
+}
+
+function generateLevelSet(grade, topicFilter, lvl) {
+var list = [];
+for (var i = 0; i < QUESTIONS_PER_LEVEL; i++) {
+list.push(generateOneQuestion(grade, topicFilter, lvl));
+}
+return list;
+}
+
+function populateTopicDropdown(grade) {
+var sel = document.getElementById("filter-topic");
+sel.innerHTML = "";
+var optAll = document.createElement("option");
+optAll.value = "Semua";
+optAll.innerText = "Semua Materi Kelas " + grade;
+sel.appendChild(optAll);
+
+var list = TOPICS_BY_GRADE[grade] || TOPICS_BY_GRADE[10];
+for (var i = 0; i < list.length; i++) {
+var o = document.createElement("option");
+o.value = list[i];
+o.innerText = list[i];
+sel.appendChild(o);
+}
+}
+
+var user = { nama: "", kelas: "", grade: 10, xp: 0, level: 1, streak: 0 };
+var filteredQuestions = [];
 var currentIdx = 0;
 var currentSteps = [];
 var revealedStepCount = 0;
 var answeredCurrent = false;
 
 document.getElementById("sync-info").innerText = APPS_SCRIPT_URL
-? "Terhubung ke Google Sheets Database"
-: "Mode Demo Lokal";
+? "Terhubung ke Google Sheets (Otomatis Kelas 10/11/12 - 100 Level)"
+: "Mode Demo Lokal (Otomatis Kelas 10/11/12 - 100 Level)";
 
 async function startApp() {
 var nama = document.getElementById("input-nama").value.trim();
@@ -513,8 +1031,18 @@ return;
 }
 user.nama = nama;
 user.kelas = kelas;
+user.grade = detectGrade(kelas);
+
+var titleEl = document.querySelector(".brand h1");
+if (titleEl) {
+titleEl.innerText = "MathQuest 3D - Kelas " + user.grade;
+}
+populateTopicDropdown(user.grade);
 
 await loadUserProgress();
+user.level = calcLevel(user.xp);
+filteredQuestions = generateLevelSet(user.grade, "Semua", user.level);
+currentIdx = 0;
 
 document.getElementById("login-screen").classList.add("hidden");
 document.getElementById("app-screen").classList.remove("hidden");
@@ -527,29 +1055,34 @@ fetchLeaderboard();
 }
 
 function calcLevel(xp) {
-return Math.floor(xp / 100) + 1;
+return Math.min(MAX_LEVEL, Math.floor(xp / XP_PER_LEVEL) + 1);
 }
 
 function updateStatsUI() {
 user.level = calcLevel(user.xp);
 document.getElementById("pill-name").innerText = user.nama + " (" + user.kelas + ")";
-document.getElementById("pill-lvl").innerText = "Lvl " + user.level;
+document.getElementById("pill-lvl").innerText = "Lvl " + user.level + "/" + MAX_LEVEL;
 document.getElementById("pill-xp").innerText = user.xp + " XP";
 document.getElementById("pill-streak").innerText = user.streak + " Streak";
 
-var xpInLevel = user.xp % 100;
-document.getElementById("xp-text").innerText = xpInLevel + " / 100 XP";
+if (user.level >= MAX_LEVEL) {
+document.getElementById("xp-text").innerText = "MAX LEVEL!";
+document.getElementById("next-lvl-text").innerText = "Grandmaster Lvl 100";
+document.getElementById("xp-bar").style.width = "100%";
+} else {
+var xpInLevel = user.xp % XP_PER_LEVEL;
+var pct = Math.round((xpInLevel / XP_PER_LEVEL) * 100);
+document.getElementById("xp-text").innerText = xpInLevel + " / " + XP_PER_LEVEL + " XP";
 document.getElementById("next-lvl-text").innerText = "Menuju Lvl " + (user.level + 1);
-document.getElementById("xp-bar").style.width = xpInLevel + "%";
+document.getElementById("xp-bar").style.width = pct + "%";
+}
 
 try { update3DCrystal(user.level); } catch (e) {}
 }
 
 function resetQuizByTopic() {
 var topic = document.getElementById("filter-topic").value;
-filteredQuestions = topic === "Semua"
-? BANK_SOAL.slice()
-: BANK_SOAL.filter(function(q) { return q.topic === topic; });
+filteredQuestions = generateLevelSet(user.grade, topic, user.level);
 currentIdx = 0;
 loadQuestion();
 }
@@ -557,7 +1090,7 @@ loadQuestion();
 function loadQuestion() {
 answeredCurrent = false;
 var q = filteredQuestions[currentIdx];
-document.getElementById("question-counter").innerText = "Soal " + (currentIdx + 1) + " / " + filteredQuestions.length;
+document.getElementById("question-counter").innerText = "Kls " + user.grade + " | Lvl " + user.level + " - Soal " + (currentIdx + 1) + " / " + QUESTIONS_PER_LEVEL;
 document.getElementById("q-topic").innerText = q.topic;
 document.getElementById("q-text").innerHTML = q.question;
 
@@ -565,6 +1098,11 @@ var fb = document.getElementById("feedback-box");
 fb.className = "feedback-box";
 document.getElementById("steps-container").innerHTML = "";
 document.getElementById("btn-next-step").classList.add("hidden");
+
+var btnNextQ = document.getElementById("btn-next-q");
+btnNextQ.innerText = currentIdx === QUESTIONS_PER_LEVEL - 1
+? "Selesai Paket 10 Soal -> Lanjut!"
+: "Soal Berikutnya ->";
 
 var optContainer = document.getElementById("options-container");
 optContainer.innerHTML = "";
@@ -595,7 +1133,7 @@ var btnStep = document.getElementById("btn-next-step");
 if (selectedIdx === q.answer) {
 btnElement.classList.add("correct");
 user.streak += 1;
-var bonus = (user.streak - 1) * 5;
+var bonus = Math.min(25, (user.streak - 1) * 5);
 var gained = 20 + bonus;
 var prevLvl = user.level;
 user.xp += gained;
@@ -604,7 +1142,7 @@ user.level = calcLevel(user.xp);
 fb.className = "feedback-box correct";
 fbTitle.innerText = "Benar! (+" + gained + " XP)";
 fbSub.innerText = user.level > prevLvl
-? "Selamat! Naik ke Level " + user.level + "! Objek 3D berevolusi!"
+? "Selamat! Naik ke Level " + user.level + "! Kristal 3D berevolusi!"
 : "Pertahankan streak-mu (" + user.streak + "x berturut-turut)!";
 
 try { trigger3DEffect("correct"); } catch (e) {}
@@ -652,7 +1190,11 @@ btnStep.innerText = "Tampilkan Langkah " + (revealedStepCount + 1) + " dari " + 
 }
 
 function nextQuestion() {
-currentIdx = (currentIdx + 1) % filteredQuestions.length;
+currentIdx++;
+if (currentIdx >= QUESTIONS_PER_LEVEL) {
+currentIdx = 0;
+filteredQuestions = generateLevelSet(user.grade, document.getElementById("filter-topic").value, user.level);
+}
 loadQuestion();
 }
 
@@ -815,30 +1357,33 @@ currentRenderedLevel = level;
 if (solidMesh) crystalGroup.remove(solidMesh);
 if (wireMesh) crystalGroup.remove(wireMesh);
 
-var geo, color, label;
-if (level === 1) {
+var shapeIdx = (level - 1) % 5;
+var geo, shapeName;
+if (shapeIdx === 0) {
 geo = new THREE.TetrahedronGeometry(1.4, 0);
-color = 0x38bdf8;
-label = "Lvl 1: Tetrahedron";
-} else if (level === 2) {
+shapeName = "Tetrahedron";
+} else if (shapeIdx === 1) {
 geo = new THREE.BoxGeometry(1.7, 1.7, 1.7);
-color = 0x22c55e;
-label = "Lvl 2: Heksahedron (Kubus)";
-} else if (level === 3) {
+shapeName = "Heksahedron";
+} else if (shapeIdx === 2) {
 geo = new THREE.OctahedronGeometry(1.45, 0);
-color = 0xa855f7;
-label = "Lvl 3: Oktahedron";
-} else if (level === 4) {
+shapeName = "Oktahedron";
+} else if (shapeIdx === 3) {
 geo = new THREE.DodecahedronGeometry(1.4, 0);
-color = 0xf59e0b;
-label = "Lvl 4: Dodekahedron";
+shapeName = "Dodekahedron";
 } else {
 geo = new THREE.IcosahedronGeometry(1.45, 0);
-color = 0xf43f5e;
-label = "Lvl " + level + ": Master Ikosahedron";
+shapeName = "Ikosahedron";
 }
 
-document.getElementById("crystal-label").innerText = label;
+var palette = [
+0x38bdf8, 0x22c55e, 0xa855f7, 0xf59e0b, 0xf43f5e,
+0x3b82f6, 0x14b8a6, 0xec4899, 0xe2e8f0, 0xfde047
+ ];
+var tierIdx = Math.min(9, Math.floor((level - 1) / 10));
+var color = palette[tierIdx];
+
+document.getElementById("crystal-label").innerText = "Lvl " + level + ": " + shapeName;
 
 var solidMat = new THREE.MeshStandardMaterial({
 color: color, roughness: 0.25, metalness: 0.6, transparent: true, opacity: 0.85
@@ -887,4 +1432,4 @@ renderer.render(scene, camera);
 }
 </script>
 </body>
-  </html>
+ </html>
