@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MathQuest 3D - Eskul Matematika Kelas 10</title>
+<!-- Three.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root {
+--bg: #0f172a;
+--card: #1e293b;
+--card-light: #334155;
+--primary: #38bdf8;
+--accent: #a855f7;
+--success: #22c55e;
+--danger: #ef4444;
+--warning: #f59e0b;
+--text: #f8fafc;
+--muted: #94a3b8;
+}
+
+* { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+body {
+margin: 0;
+background: radial-gradient(circle at top, #1e1b4b, var(--bg));
+color: var(--text);
+min-height: 100vh;
+padding: 16px;
+}
+
+.container {
+max-width: 1100px;
+margin: 0 auto;
+}
+
+header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+flex-wrap: wrap;
+gap: 12px;
+margin-bottom: 20px;
+padding: 14px 20px;
+background: rgba(30, 41, 59, 0.85);
+border: 1px solid rgba(255,255,255,0.1);
+border-radius: 16px;
+backdrop-filter: blur(8px);
+}
+
+.brand h1 { margin: 0; font-size: 1.4rem; color: var(--primary); }
+.brand p { margin: 2px 0 0; font-size: 0.85rem; color: var(--muted); }
+
+.stats-bar {
+display: flex;
+gap: 12px;
+align-items: center;
+flex-wrap: wrap;
+}
+
+.pill {
+background: var(--card-light);
+padding: 6px 14px;
+border-radius: 999px;
+font-weight: 600;
+font-size: 0.9rem;
+display: flex;
+align-items: center;
+gap: 6px;
+}
+.pill.xp { color: var(--warning); }
+.pill.lvl { color: var(--primary); }
+.pill.streak { color: #fb7185; }
+
+/* Layout Utama */
+.grid {
+display: grid;
+grid-template-columns: 360px 1fr;
+gap: 20px;
+}
+@media (max-width: 850px) {
+.grid { grid-template-columns: 1fr; }
+}
+
+.panel {
+background: rgba(30, 41, 59, 0.9);
+border: 1px solid rgba(255,255,255,0.1);
+border-radius: 18px;
+padding: 20px;
+}
+
+/* 3D Canvas */
+#scene-wrapper {
+position: relative;
+width: 100%;
+height: 260px;
+background: radial-gradient(circle, #1e293b 0%, #090d16 100%);
+border-radius: 14px;
+overflow: hidden;
+border: 1px solid rgba(56, 189, 248, 0.25);
+cursor: grab;
+}
+#scene-wrapper:active { cursor: grabbing; }
+#three-canvas { width: 100%; height: 100%; display: block; }
+.scene-badge {
+position: absolute;
+bottom: 10px;
+left: 10px;
+background: rgba(15, 23, 42, 0.8);
+padding: 4px 10px;
+border-radius: 8px;
+font-size: 0.78rem;
+color: var(--primary);
+pointer-events: none;
+}
+
+/* Progress Bar Level */
+.xp-progress-wrap {
+margin-top: 14px;
+}
+.xp-progress-label {
+display: flex;
+justify-content: space-between;
+font-size: 0.82rem;
+color: var(--muted);
+margin-bottom: 6px;
+}
+.progress-bg {
+height: 10px;
+background: #0f172a;
+border-radius: 999px;
+overflow: hidden;
+}
+.progress-fill {
+height: 100%;
+width: 0%;
+background: linear-gradient(90deg, var(--primary), var(--accent));
+transition: width 0.4s ease;
+}
+
+/* Form Login & Filter */
+input, select, button {
+font-size: 0.95rem;
+border-radius: 10px;
+border: none;
+outline: none;
+}
+input, select {
+width: 100%;
+padding: 10px 12px;
+background: #0f172a;
+color: var(--text);
+border: 1px solid var(--card-light);
+margin-bottom: 10px;
+}
+button {
+padding: 10px 16px;
+font-weight: 600;
+cursor: pointer;
+transition: transform 0.1s, opacity 0.2s;
+}
+button:active { transform: scale(0.98); }
+.btn-primary {
+background: linear-gradient(135deg, var(--primary), #2563eb);
+color: white;
+width: 100%;
+}
+.btn-secondary {
+background: var(--card-light);
+color: var(--text);
+}
+.btn-success {
+background: var(--success);
+color: #052e16;
+}
+
+/* Quiz Area */
+.topic-tag {
+display: inline-block;
+background: rgba(168, 85, 247, 0.2);
+color: #d8b4fe;
+padding: 4px 12px;
+border-radius: 999px;
+font-size: 0.8rem;
+font-weight: 600;
+margin-bottom: 10px;
+}
+.question-text {
+font-size: 1.2rem;
+line-height: 1.5;
+margin-bottom: 18px;
+font-weight: 500;
+}
+.options-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 12px;
+}
+@media (max-width: 550px) {
+.options-grid { grid-template-columns: 1fr; }
+}
+.option-btn {
+text-align: left;
+padding: 14px 16px;
+background: #0f172a;
+color: var(--text);
+border: 2px solid var(--card-light);
+border-radius: 12px;
+font-size: 1rem;
+}
+.option-btn:hover:not(:disabled) {
+border-color: var(--primary);
+background: #172554;
+}
+.option-btn.correct {
+border-color: var(--success);
+background: rgba(34, 197, 94, 0.2);
+}
+.option-btn.wrong {
+border-color: var(--danger);
+background: rgba(239, 68, 68, 0.2);
+}
+
+/* Step-by-Step Box */
+.feedback-box {
+margin-top: 20px;
+padding: 16px;
+border-radius: 14px;
+display: none;
+}
+.feedback-box.correct {
+display: block;
+background: rgba(34, 197, 94, 0.12);
+border: 1px solid var(--success);
+}
+.feedback-box.wrong {
+display: block;
+background: rgba(239, 68, 68, 0.12);
+border: 1px solid var(--danger);
+}
+.step-item {
+background: rgba(15, 23, 42, 0.7);
+padding: 10px 14px;
+border-left: 4px solid var(--warning);
+border-radius: 8px;
+margin-top: 8px;
+font-size: 0.94rem;
+line-height: 1.45;
+animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(6px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+/* Leaderboard */
+.leaderboard-list {
+margin-top: 12px;
+max-height: 220px;
+overflow-y: auto;
+}
+.lb-row {
+display: flex;
+justify-content: space-between;
+padding: 8px 10px;
+border-bottom: 1px solid rgba(255,255,255,0.06);
+font-size: 0.88rem;
+}
+.lb-row:nth-child(1) { color: #fde047; font-weight: bold; }
+.lb-row:nth-child(2) { color: #cbd5e1; font-weight: bold; }
+.lb-row:nth-child(3) { color: #fdba74; font-weight: bold; }
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="container">
+<header>
+<div class="brand">
+<h1>📐 MathQuest 3D — Kelas 10</h1>
+<p>Eskul Matematika Interaktif • Gamifikasi + Pembahasan Bertahap</p>
+</div>
+<div class="stats-bar" id="user-stats" style="display:none;">
+<div class="pill" id="pill-name">👤 Siswa</div>
+<div class="pill lvl" id="pill-lvl">🛡️ Lvl 1</div>
+<div class="pill xp" id="pill-xp">⭐ 0 XP</div>
+<div class="pill streak" id="pill-streak">🔥 0 Streak</div>
+</div>
+</header>
+
+<!-- LAYAR LOGIN -->
+<div id="login-screen" class="panel" style="max-width:450px; margin: 40px auto;">
+<h2 style="margin-top:0;">Masuk ke Arena Matematika</h2>
+<p style="color:var(--muted); font-size:0.9rem;">
+Masukkan nama dan kelasmu. Poin dan Level akan tersimpan otomatis ke database Eskul.
+</p>
+<label style="font-size:0.85rem; color:var(--muted);">Nama Lengkap</label>
+<input type="text" id="input-nama" placeholder="Contoh: Budi Santoso" />
+<label style="font-size:0.85rem; color:var(--muted);">Kelas</label>
+<input type="text" id="input-kelas" placeholder="Contoh: X-1 atau X IPA 2" />
+<button class="btn-primary" onclick="startApp()">Mulai Belajar 🚀</button>
+<p id="sync-info" style="font-size:0.78rem; color:var(--muted); margin-top:12px; text-align:center;"></p>
+</div>
+
+<!-- DASHBOARD UTAMA -->
+<div id="app-screen" class="grid hidden">
+<!-- KOLOM KIRI: 3D AVATAR & LEADERBOARD -->
+<div style="display:flex; flex-direction:column; gap:20px;">
+<div class="panel">
+<div id="scene-wrapper">
+<canvas id="three-canvas"></canvas>
+<div class="scene-badge" id="crystal-label">Lvl 1: Tetrahedron</div>
+</div>
+<div class="xp-progress-wrap">
+<div class="xp-progress-label">
+<span id="xp-text">0 / 100 XP</span>
+<span id="next-lvl-text">Menuju Lvl 2</span>
+</div>
+<div class="progress-bg">
+<div class="progress-fill" id="xp-bar"></div>
+</div>
+</div>
+<p style="font-size:0.78rem; color:var(--muted); margin:10px 0 0;">
+💡 <i>Putar objek 3D dengan mouse/sentuhan! Kristal berevolusi setiap naik level (kelipatan 100 XP).</i>
+</p>
+</div>
+
+<div class="panel">
+<div style="display:flex; justify-content:space-between; align-items:center;">
+<h3 style="margin:0; font-size:1.05rem;">🏆 Papan Peringkat</h3>
+<button class="btn-secondary" style="padding:4px 10px; font-size:0.8rem;" onclick="fetchLeaderboard()">🔄 Refresh</button>
+</div>
+<div class="leaderboard-list" id="leaderboard-list">
+<p style="color:var(--muted); font-size:0.85rem;">Memuat data...</p>
+</div>
+</div>
+</div>
+
+<!-- KOLOM KANAN: LATIHAN SOAL INTERAKTIF -->
+<div class="panel">
+<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
+<select id="filter-topic" style="width:auto; margin:0;" onchange="resetQuizByTopic()">
+<option value="Semua">📚 Semua Materi Kelas 10</option>
+<option value="Eksponen & Logaritma">Eksponen & Logaritma</option>
+<option value="Barisan & Deret">Barisan & Deret</option>
+<option value="Trigonometri">Trigonometri</option>
+<option value="Fungsi Kuadrat & SPL">Fungsi Kuadrat & SPL</option>
+<option value="Peluang">Peluang</option>
+</select>
+<span id="question-counter" style="color:var(--muted); font-size:0.9rem;">Soal 1 / 10</span>
+</div>
+
+<div id="quiz-area">
+<span class="topic-tag" id="q-topic">Topik</span>
+<div class="question-text" id="q-text">Memuat soal...</div>
+<div class="options-grid" id="options-container"></div>
+
+<!-- KOTAK UMPAN BALIK & PENJELASAN BERTAHAP -->
+<div id="feedback-box" class="feedback-box">
+<h3 id="feedback-title" style="margin:0 0 8px;"></h3>
+<p id="feedback-subtitle" style="margin:0 0 10px; font-size:0.92rem;"></p>
+
+<div id="steps-container"></div>
+
+<div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+<button id="btn-next-step" class="btn-secondary hidden" onclick="revealNextStep()">
+🔍 Tampilkan Langkah Berikutnya
+</button>
+<button id="btn-next-q" class="btn-primary" style="width:auto;" onclick="nextQuestion()">
+Soal Berikutnya ➡️
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZQkOcGY-SfU8e0gpIhw2Nx-1zGtG7nPlW7ODBItAUhg4q6tTUNNFVt1nr0NFAtz7W/exec";
+
+var BANK_SOAL = [
+{
+topic: "Eksponen & Logaritma",
+question: "Tentukan hasil sederhana dari (2<sup>3</sup> × 2<sup>4</sup>) : 2<sup>5</sup> !",
+options: ["2", "4", "8", "16"],
+answer: 1,
+steps: [
+"<b>Langkah 1 (Perkalian Eksponen):</b> Gunakan sifat a<sup>m</sup> × a<sup>n</sup> = a<sup>m+n</sup>. Maka 2<sup>3</sup> × 2<sup>4</sup> = 2<sup>3+4</sup> = 2<sup>7</sup>.",
+"<b>Langkah 2 (Pembagian Eksponen):</b> Gunakan sifat a<sup>m</sup> : a<sup>n</sup> = a<sup>m-n</sup>. Maka 2<sup>7</sup> : 2<sup>5</sup> = 2<sup>7-5</sup> = 2<sup>2</sup>.",
+"<b>Langkah 3 (Hasil Akhir):</b> Hitung nilai 2<sup>2</sup> = 2 × 2 = <b>4</b>."
+ ]
+},
+{
+topic: "Eksponen & Logaritma",
+question: "Jika 3<sup>2x - 1</sup> = 27, berapakah nilai x yang memenuhi?",
+options: ["1", "2", "3", "4"],
+answer: 1,
+steps: [
+"<b>Langkah 1 (Samakan Basis):</b> Ubah bilangan 27 menjadi pangkat berbasis 3, yaitu 27 = 3<sup>3</sup>.",
+"<b>Langkah 2 (Samakan Pangkat):</b> Persamaan menjadi 3<sup>2x - 1</sup> = 3<sup>3</sup>. Karena basis sama, maka 2x - 1 = 3.",
+"<b>Langkah 3 (Hitung x):</b> 2x = 3 + 1 → 2x = 4 → x = <b>2</b>."
+ ]
+},
+{
+topic: "Eksponen & Logaritma",
+question: "Hitunglah nilai dari <sup>2</sup>log 8 + <sup>2</sup>log 4 !",
+options: ["3", "4", "5", "6"],
+answer: 2,
+steps: [
+"<b>Langkah 1 (Sifat Logaritma):</b> Gunakan sifat <sup>a</sup>log b + <sup>a</sup>log c = <sup>a</sup>log (b × c).",
+"<b>Langkah 2 (Gabungkan):</b> <sup>2</sup>log 8 + <sup>2</sup>log 4 = <sup>2</sup>log (8 × 4) = <sup>2</sup>log 32.",
+"<b>Langkah 3 (Hasil):</b> Karena 2<sup>5</sup> = 32, maka nilai <sup>2</sup>log 32 = <b>5</b>."
+ ]
+},
+{
+topic: "Barisan & Deret",
+question: "Diketahui barisan aritmatika: 5, 9, 13, 17, ... Tentukan suku ke-10 (U<sub>10</sub>)!",
+options: ["37", "39", "41", "45"],
+answer: 2,
+steps: [
+"<b>Langkah 1 (Identifikasi):</b> Suku pertama a = 5, dan beda b = 9 - 5 = 4.",
+"<b>Langkah 2 (Rumus):</b> U<sub>n</sub> = a + (n - 1)b.",
+"<b>Langkah 3 (Substitusi n = 10):</b> U<sub>10</sub> = 5 + (10 - 1) × 4 = 5 + 36 = <b>41</b>."
+ ]
+},
+{
+topic: "Barisan & Deret",
+question: "Sebuah bakteri membelah diri menjadi 2 setiap jam. Jika mula-mula ada 3 bakteri, berapa jumlah bakteri setelah 4 jam?",
+options: ["24 bakteri", "32 bakteri", "48 bakteri", "96 bakteri"],
+answer: 2,
+steps: [
+"<b>Langkah 1 (Identifikasi Geometri):</b> Jumlah awal a = 3, dan rasio r = 2.",
+"<b>Langkah 2 (Rumus):</b> Setelah 4 jam, jumlah bakteri = a × r<sup>n</sup>.",
+"<b>Langkah 3 (Perhitungan):</b> 3 × 2<sup>4</sup> = 3 × 16 = <b>48 bakteri</b>."
+ ]
+},
+{
+topic: "Trigonometri",
+question: "Berapakah nilai dari sin 30° + cos 60° ?",
+options: ["0", "1/2", "1", "√3"],
+answer: 2,
+steps: [
+"<b>Langkah 1 (Sinus):</b> Nilai sin 30° = 1/2.",
+"<b>Langkah 2 (Kosinus):</b> Nilai cos 60° = 1/2.",
+"<b>Langkah 3 (Jumlah):</b> 1/2 + 1/2 = <b>1</b>."
+ ]
+},
+{
+topic: "Trigonometri",
+question: "Sebuah tangga sepanjang 10 m bersandar pada dinding dan membentuk sudut 30° terhadap lantai. Berapakah tinggi dinding yang dicapai ujung tangga?",
+options: ["5 m", "5√3 m", "8 m", "10√3 m"],
+answer: 0,
+steps: [
+"<b>Langkah 1 (Model Segitiga):</b> Tangga = sisi miring (10 m), tinggi dinding = sisi depan sudut 30°.",
+"<b>Langkah 2 (Rumus Sinus):</b> sin 30° = depan / miring = tinggi / 10.",
+"<b>Langkah 3 (Hitung):</b> 1/2 = tinggi / 10 → tinggi = <b>5 m</b>."
+ ]
+},
+{
+topic: "Fungsi Kuadrat & SPL",
+question: "Tentukan persamaan sumbu simetri dari fungsi kuadrat f(x) = x<sup>2</sup> - 6x + 8 !",
+options: ["x = -3", "x = 3", "x = 6", "x = -6"],
+answer: 1,
+steps: [
+"<b>Langkah 1 (Koefisien):</b> Dari ax<sup>2</sup> + bx + c, didapat a = 1, b = -6, c = 8.",
+"<b>Langkah 2 (Rumus):</b> x = -b / (2a).",
+"<b>Langkah 3 (Substitusi):</b> x = -(-6) / (2 × 1) = 6 / 2 = <b>x = 3</b>."
+ ]
+},
+{
+topic: "Fungsi Kuadrat & SPL",
+question: "Harga 2 buku dan 1 pulpen adalah Rp11.000. Harga 1 buku dan 1 pulpen adalah Rp7.000. Berapa harga 1 buku?",
+options: ["Rp3.000", "Rp4.000", "Rp5.000", "Rp6.000"],
+answer: 1,
+steps: [
+"<b>Langkah 1 (Model SPLDV):</b> Buku = x, pulpen = y. (1) 2x + y = 11.000, (2) x + y = 7.000.",
+"<b>Langkah 2 (Eliminasi y):</b> (2x + y) - (x + y) = 11.000 - 7.000.",
+"<b>Langkah 3 (Hasil):</b> Didapat x = <b>Rp4.000</b>."
+ ]
+},
+{
+topic: "Peluang",
+question: "Dua buah uang logam dilempar bersamaan sekali. Berapakah peluang munculnya keduanya angka (AA)?",
+options: ["1/4", "1/3", "1/2", "3/4"],
+answer: 0,
+steps: [
+"<b>Langkah 1 (Ruang Sampel):</b> {AA, AG, GA, GG}, jadi n(S) = 4.",
+"<b>Langkah 2 (Titik Sampel):</b> Keduanya angka = {AA}, jadi n(A) = 1.",
+"<b>Langkah 3 (Peluang):</b> P(A) = n(A) / n(S) = <b>1/4</b>."
+ ]
+}
+];
+
+var user = { nama: "", kelas: "", xp: 0, level: 1, streak: 0 };
+var filteredQuestions = BANK_SOAL.slice();
+var currentIdx = 0;
+var currentSteps = [];
+var revealedStepCount = 0;
+var answeredCurrent = false;
+
+document.getElementById("sync-info").innerText = APPS_SCRIPT_URL
+? "Terhubung ke Google Sheets Database"
+: "Mode Demo Lokal";
+
+async function startApp() {
+var nama = document.getElementById("input-nama").value.trim();
+var kelas = document.getElementById("input-kelas").value.trim();
+if (!nama || !kelas) {
+alert("Harap isi Nama dan Kelas terlebih dahulu!");
+return;
+}
+user.nama = nama;
+user.kelas = kelas;
+
+await loadUserProgress();
+
+document.getElementById("login-screen").classList.add("hidden");
+document.getElementById("app-screen").classList.remove("hidden");
+document.getElementById("user-stats").style.display = "flex";
+
+try { initThreeJS(); } catch (e) { console.warn("3D tidak tersedia:", e); }
+updateStatsUI();
+loadQuestion();
+fetchLeaderboard();
+}
+
+function calcLevel(xp) {
+return Math.floor(xp / 100) + 1;
+}
+
+function updateStatsUI() {
+user.level = calcLevel(user.xp);
+document.getElementById("pill-name").innerText = user.nama + " (" + user.kelas + ")";
+document.getElementById("pill-lvl").innerText = "Lvl " + user.level;
+document.getElementById("pill-xp").innerText = user.xp + " XP";
+document.getElementById("pill-streak").innerText = user.streak + " Streak";
+
+var xpInLevel = user.xp % 100;
+document.getElementById("xp-text").innerText = xpInLevel + " / 100 XP";
+document.getElementById("next-lvl-text").innerText = "Menuju Lvl " + (user.level + 1);
+document.getElementById("xp-bar").style.width = xpInLevel + "%";
+
+try { update3DCrystal(user.level); } catch (e) {}
+}
+
+function resetQuizByTopic() {
+var topic = document.getElementById("filter-topic").value;
+filteredQuestions = topic === "Semua"
+? BANK_SOAL.slice()
+: BANK_SOAL.filter(function(q) { return q.topic === topic; });
+currentIdx = 0;
+loadQuestion();
+}
+
+function loadQuestion() {
+answeredCurrent = false;
+var q = filteredQuestions[currentIdx];
+document.getElementById("question-counter").innerText = "Soal " + (currentIdx + 1) + " / " + filteredQuestions.length;
+document.getElementById("q-topic").innerText = q.topic;
+document.getElementById("q-text").innerHTML = q.question;
+
+var fb = document.getElementById("feedback-box");
+fb.className = "feedback-box";
+document.getElementById("steps-container").innerHTML = "";
+document.getElementById("btn-next-step").classList.add("hidden");
+
+var optContainer = document.getElementById("options-container");
+optContainer.innerHTML = "";
+
+q.options.forEach(function(opt, i) {
+var btn = document.createElement("button");
+btn.className = "option-btn";
+btn.innerHTML = String.fromCharCode(65 + i) + ". " + opt;
+btn.onclick = function() { checkAnswer(i, btn); };
+optContainer.appendChild(btn);
+});
+}
+
+function checkAnswer(selectedIdx, btnElement) {
+if (answeredCurrent) return;
+answeredCurrent = true;
+
+var q = filteredQuestions[currentIdx];
+var allBtns = document.querySelectorAll(".option-btn");
+allBtns.forEach(function(b) { b.disabled = true; });
+
+var fb = document.getElementById("feedback-box");
+var fbTitle = document.getElementById("feedback-title");
+var fbSub = document.getElementById("feedback-subtitle");
+var stepsDiv = document.getElementById("steps-container");
+var btnStep = document.getElementById("btn-next-step");
+
+if (selectedIdx === q.answer) {
+btnElement.classList.add("correct");
+user.streak += 1;
+var bonus = (user.streak - 1) * 5;
+var gained = 20 + bonus;
+var prevLvl = user.level;
+user.xp += gained;
+user.level = calcLevel(user.xp);
+
+fb.className = "feedback-box correct";
+fbTitle.innerText = "Benar! (+" + gained + " XP)";
+fbSub.innerText = user.level > prevLvl
+? "Selamat! Naik ke Level " + user.level + "! Objek 3D berevolusi!"
+: "Pertahankan streak-mu (" + user.streak + "x berturut-turut)!";
+
+try { trigger3DEffect("correct"); } catch (e) {}
+updateStatsUI();
+saveUserProgress();
+} else {
+btnElement.classList.add("wrong");
+allBtns[q.answer].classList.add("correct");
+user.streak = 0;
+
+fb.className = "feedback-box wrong";
+fbTitle.innerText = "Jawaban Belum Tepat";
+fbSub.innerText = "Mari pelajari langkah demi langkah:";
+
+currentSteps = q.steps;
+revealedStepCount = 1;
+stepsDiv.innerHTML = "<div class='step-item'>" + currentSteps[0] + "</div>";
+
+if (currentSteps.length > 1) {
+btnStep.classList.remove("hidden");
+btnStep.innerText = "Tampilkan Langkah 2 dari " + currentSteps.length;
+}
+
+try { trigger3DEffect("wrong"); } catch (e) {}
+updateStatsUI();
+}
+}
+
+function revealNextStep() {
+if (revealedStepCount < currentSteps.length) {
+var stepsDiv = document.getElementById("steps-container");
+var div = document.createElement("div");
+div.className = "step-item";
+div.innerHTML = currentSteps[revealedStepCount];
+stepsDiv.appendChild(div);
+revealedStepCount++;
+
+var btnStep = document.getElementById("btn-next-step");
+if (revealedStepCount >= currentSteps.length) {
+btnStep.classList.add("hidden");
+} else {
+btnStep.innerText = "Tampilkan Langkah " + (revealedStepCount + 1) + " dari " + currentSteps.length;
+}
+}
+}
+
+function nextQuestion() {
+currentIdx = (currentIdx + 1) % filteredQuestions.length;
+loadQuestion();
+}
+
+async function loadUserProgress() {
+var localKey = "mathquest_" + user.nama.toLowerCase() + "_" + user.kelas.toLowerCase();
+var savedLocal = localStorage.getItem(localKey);
+if (savedLocal) {
+var parsed = JSON.parse(savedLocal);
+user.xp = parsed.xp || 0;
+user.level = calcLevel(user.xp);
+}
+
+if (!APPS_SCRIPT_URL) return;
+
+try {
+var res = await fetch(APPS_SCRIPT_URL);
+var data = await res.json();
+if (data.status === "success") {
+var found = data.users.find(function(u) {
+return u.nama.toLowerCase() === user.nama.toLowerCase() &&
+u.kelas.toLowerCase() === user.kelas.toLowerCase();
+});
+if (found) {
+user.xp = Math.max(user.xp, found.xp);
+user.level = calcLevel(user.xp);
+} else {
+saveUserProgress();
+}
+}
+} catch (err) {
+console.warn("Gagal sinkron dengan Google Sheets:", err);
+}
+}
+
+async function saveUserProgress() {
+var localKey = "mathquest_" + user.nama.toLowerCase() + "_" + user.kelas.toLowerCase();
+localStorage.setItem(localKey, JSON.stringify({ xp: user.xp, level: user.level }));
+
+if (!APPS_SCRIPT_URL) {
+fetchLeaderboard();
+return;
+}
+
+try {
+await fetch(APPS_SCRIPT_URL, {
+method: "POST",
+headers: { "Content-Type": "text/plain;charset=utf-8" },
+body: JSON.stringify({
+nama: user.nama,
+kelas: user.kelas,
+xp: user.xp,
+level: user.level
+})
+});
+fetchLeaderboard();
+} catch (err) {
+console.warn("Gagal menyimpan ke Google Sheets:", err);
+}
+}
+
+async function fetchLeaderboard() {
+var listEl = document.getElementById("leaderboard-list");
+
+if (!APPS_SCRIPT_URL) {
+renderLeaderboard([{ nama: user.nama, kelas: user.kelas, xp: user.xp, level: user.level }]);
+return;
+}
+
+try {
+var res = await fetch(APPS_SCRIPT_URL);
+var data = await res.json();
+if (data.status === "success") {
+renderLeaderboard(data.users.slice(0, 10));
+}
+} catch (err) {
+listEl.innerHTML = "<p style='color:var(--danger); font-size:0.85rem;'>Gagal memuat leaderboard.</p>";
+}
+}
+
+function renderLeaderboard(users) {
+var listEl = document.getElementById("leaderboard-list");
+if (!users.length) {
+listEl.innerHTML = "<p style='color:var(--muted); font-size:0.85rem;'>Belum ada data.</p>";
+return;
+}
+listEl.innerHTML = users.map(function(u, idx) {
+return "<div class='lb-row'><span>#" + (idx + 1) + " " + u.nama + " <small style='color:var(--muted);'>(" + u.kelas + ")</small></span><span>Lvl " + u.level + " - " + u.xp + " XP</span></div>";
+}).join("");
+}
+
+var scene, camera, renderer, crystalGroup, solidMesh, wireMesh, ringMesh;
+var currentRenderedLevel = 0;
+var rotSpeed = 0.008;
+var effectTimer = 0;
+var effectType = null;
+var isDragging = false;
+var prevPointer = { x: 0, y: 0 };
+
+function initThreeJS() {
+if (typeof THREE === "undefined") return;
+var wrapper = document.getElementById("scene-wrapper");
+var canvas = document.getElementById("three-canvas");
+
+scene = new THREE.Scene();
+camera = new THREE.PerspectiveCamera(45, wrapper.clientWidth / wrapper.clientHeight, 0.1, 100);
+camera.position.z = 5.2;
+
+renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+renderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+var ambient = new THREE.AmbientLight(0xffffff, 0.6);
+scene.add(ambient);
+var pointLight = new THREE.PointLight(0x38bdf8, 1.5, 20);
+pointLight.position.set(3, 4, 5);
+scene.add(pointLight);
+var pointLight2 = new THREE.PointLight(0xa855f7, 1.2, 20);
+pointLight2.position.set(-4, -3, 2);
+scene.add(pointLight2);
+
+crystalGroup = new THREE.Group();
+scene.add(crystalGroup);
+
+var ringGeo = new THREE.TorusGeometry(2.1, 0.035, 16, 80);
+var ringMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.55 });
+ringMesh = new THREE.Mesh(ringGeo, ringMat);
+ringMesh.rotation.x = Math.PI / 3;
+crystalGroup.add(ringMesh);
+
+update3DCrystal(user.level);
+
+wrapper.addEventListener("pointerdown", function(e) {
+isDragging = true;
+prevPointer = { x: e.clientX, y: e.clientY };
+});
+window.addEventListener("pointerup", function() { isDragging = false; });
+window.addEventListener("pointermove", function(e) {
+if (!isDragging) return;
+var dx = e.clientX - prevPointer.x;
+var dy = e.clientY - prevPointer.y;
+crystalGroup.rotation.y += dx * 0.01;
+crystalGroup.rotation.x += dy * 0.01;
+prevPointer = { x: e.clientX, y: e.clientY };
+});
+
+window.addEventListener("resize", function() {
+if (!wrapper.clientWidth) return;
+camera.aspect = wrapper.clientWidth / wrapper.clientHeight;
+camera.updateProjectionMatrix();
+renderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
+});
+
+animate3D();
+}
+
+function update3DCrystal(level) {
+if (!crystalGroup || level === currentRenderedLevel) return;
+currentRenderedLevel = level;
+
+if (solidMesh) crystalGroup.remove(solidMesh);
+if (wireMesh) crystalGroup.remove(wireMesh);
+
+var geo, color, label;
+if (level === 1) {
+geo = new THREE.TetrahedronGeometry(1.4, 0);
+color = 0x38bdf8;
+label = "Lvl 1: Tetrahedron";
+} else if (level === 2) {
+geo = new THREE.BoxGeometry(1.7, 1.7, 1.7);
+color = 0x22c55e;
+label = "Lvl 2: Heksahedron (Kubus)";
+} else if (level === 3) {
+geo = new THREE.OctahedronGeometry(1.45, 0);
+color = 0xa855f7;
+label = "Lvl 3: Oktahedron";
+} else if (level === 4) {
+geo = new THREE.DodecahedronGeometry(1.4, 0);
+color = 0xf59e0b;
+label = "Lvl 4: Dodekahedron";
+} else {
+geo = new THREE.IcosahedronGeometry(1.45, 0);
+color = 0xf43f5e;
+label = "Lvl " + level + ": Master Ikosahedron";
+}
+
+document.getElementById("crystal-label").innerText = label;
+
+var solidMat = new THREE.MeshStandardMaterial({
+color: color, roughness: 0.25, metalness: 0.6, transparent: true, opacity: 0.85
+});
+solidMesh = new THREE.Mesh(geo, solidMat);
+
+var wireMat = new THREE.MeshBasicMaterial({
+color: 0xffffff, wireframe: true, transparent: true, opacity: 0.35
+});
+wireMesh = new THREE.Mesh(geo, wireMat);
+wireMesh.scale.set(1.03, 1.03, 1.03);
+
+crystalGroup.add(solidMesh);
+crystalGroup.add(wireMesh);
+ringMesh.material.color.setHex(color);
+}
+
+function trigger3DEffect(type) {
+effectType = type;
+effectTimer = 35;
+}
+
+function animate3D() {
+requestAnimationFrame(animate3D);
+if (!isDragging) {
+crystalGroup.rotation.y += rotSpeed;
+crystalGroup.rotation.x += rotSpeed * 0.4;
+}
+ringMesh.rotation.z += 0.015;
+
+if (effectTimer > 0) {
+effectTimer--;
+if (effectType === "correct") {
+crystalGroup.rotation.y += 0.12;
+var s = 1 + Math.sin((effectTimer / 35) * Math.PI) * 0.25;
+crystalGroup.scale.set(s, s, s);
+} else if (effectType === "wrong") {
+crystalGroup.position.x = Math.sin(effectTimer * 1.2) * 0.15;
+}
+} else {
+crystalGroup.scale.set(1, 1, 1);
+crystalGroup.position.x = 0;
+}
+
+renderer.render(scene, camera);
+}
+</script>
+</body>
+  </html>
